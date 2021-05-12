@@ -1,0 +1,9 @@
+#calculator-buttons {
+  display: flex;
+  flex-direction: row;
+  border: thin solid black;
+}
+
+.calculator-button {
+  flex-basis: 100%;
+}
