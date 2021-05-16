@@ -1,42 +1,57 @@
-#calculator-buttons {
+#calculator-display {
   width: 250px;
-  border: thin solid black;
+  height: 50px;
+  border: 2px solid black;
+  border-bottom: 0;
+  box-sizing: border-box;
 }
 
 .flex-row {
   display: flex;
   flex-direction: row;
+  
 }
 
 .flex-row > div > p {
+  height: 50px;
+  line-height: 3rem;
   text-align: center;
+  
+  border: 1px solid black;
+  margin: 0;
 }
 
-#clearEntryButton,
-#clearButton,
-#deleteButton,
-#divideButton,
-#numberButton1,
-#numberButton2,
-#numberButton3,
-#numberButton4,
-#numberButton5,
-#numberButton6,
-#numberButton7,
-#numberButton8,
-#numberButton9,
-#addButton,
-#subtractButton,
-#multiplyButton,
-#divideButton {
+#calculator-buttons {
+  width: 250px;
+  box-sizing: border-box;
+  border: 1px solid black;
+}
+
+#clear-entry-button,
+#clear-button,
+#delete-button,
+#divide-button,
+#number-button-1,
+#number-button-2,
+#number-button-3,
+#number-button-4,
+#number-button-5,
+#number-button-6,
+#number-button-7,
+#number-button-8,
+#number-button-9,
+#add-button,
+#subtract-button,
+#multiply-button,
+#divide-button {
   flex-basis: 100%;
 }
 
-#numberButton0 {
+#number-button-0 {
   flex-basis: 50%;
 }
 
-#decimalButton,
-#equalsButton {
+#decimal-button,
+#equals-button {
   flex-basis: 25%;
 }
