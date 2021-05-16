@@ -1,9 +1,42 @@
 #calculator-buttons {
-  display: flex;
-  flex-direction: row;
+  width: 250px;
   border: thin solid black;
 }
 
-.calculator-button {
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-row > div > p {
+  text-align: center;
+}
+
+#clearEntryButton,
+#clearButton,
+#deleteButton,
+#divideButton,
+#numberButton1,
+#numberButton2,
+#numberButton3,
+#numberButton4,
+#numberButton5,
+#numberButton6,
+#numberButton7,
+#numberButton8,
+#numberButton9,
+#addButton,
+#subtractButton,
+#multiplyButton,
+#divideButton {
   flex-basis: 100%;
+}
+
+#numberButton0 {
+  flex-basis: 50%;
+}
+
+#decimalButton,
+#equalsButton {
+  flex-basis: 25%;
 }
