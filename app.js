@@ -32,40 +32,50 @@ function operate(a, b, operator) {
   }
 }
 
-var operationNumberOneString = '';
-var operationNumberTwoString = '';
+var operationBaseNumberString = '';
+var operationOperatingNumberString = '';
 var operationType = null;
 var operationResult = null;
 var calculatorDisplayText = document.getElementById('calculator-display-text');
+var calculatorState = 'takingBaseNumber';
 
 function clickNumberButton(number) {
-  if (operationNumberOneString === operationNumberTwoString || Number.isInteger(operationResult)) {
+  if (Number.isInteger(operationResult)) {
     operationResult = null;
-    operationNumberOneString = '';
+    operationBaseNumberString = '';
     calculatorDisplayText.innerText = '';
   }
   
-  operationNumberOneString += number;
-  calculatorDisplayText.innerText += `${number}`;
+  if (calculatorState === 'takingBaseNumber') {
+    operationBaseNumberString += number;
+    calculatorDisplayText.innerText = operationBaseNumberString;
+  }
+  
+  if (calculatorState === 'takingOperatingNumber') {
+    operationOperatingNumberString += number;
+    calculatorDisplayText.innerText = operationOperatingNumberString
+  }
 }
 
 function clickOperationButton(operation) {
   operationType = operation;
-  operationNumberTwoString = operationNumberOneString;
+  calculatorState = 'takingOperatingNumber';
 }
 
 function clickEqualsButton() {
   if (operationType === 'add') {
-    var a = parseInt(operationNumberOneString);
-    var b = parseInt(operationNumberTwoString);
+    var a = parseInt(operationBaseNumberString);
+    var b = parseInt(operationOperatingNumberString);
     
-    if (operationResult != null) {
-      calculatorDisplayText.innerText = add(a, operationResult);
-      operationResult = add(a, operationResult);
+    if (Number.isInteger(operationResult)) {
+      calculatorDisplayText.innerText = add(b, operationResult);
+      operationResult = add(b, operationResult);
     } else {
       calculatorDisplayText.innerText = add(a, b);
       operationResult = add(a, b);
     }
+
+    calculatorState = 'takingBaseNumber';
   }
 }
 
