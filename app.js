@@ -44,32 +44,53 @@ function clickOperationButton(operation) {
   calculatorState = 'takingOperatingNumber';
 }
 
-function clickEqualsButton() {
+// function clickEqualsButton() {
+//   var a = parseInt(operationBaseNumberString);
+//   var b = parseInt(operationOperatingNumberString);
+  
+//   if (operationType === 'add') {
+//     if (Number.isInteger(operationResult)) {
+//       calculatorDisplayText.innerText = add(operationResult, b);
+//       operationResult = add(operationResult, b);
+//     } else {
+//       calculatorDisplayText.innerText = add(a, b);
+//       operationResult = add(a, b);
+//     }
+//   }
+
+//   if (operationType === 'subtract') {
+//     if (Number.isInteger(operationResult)) {
+//       calculatorDisplayText.innerText = subtract(operationResult, b);
+//       operationResult = subtract(operationResult, b);
+//     } else {
+//       calculatorDisplayText.innerText = subtract(a, b);
+//       operationResult = subtract(a, b);
+//     }
+//   }
+
+function updateOperationResultAndDisplayText(operationType) {
   var a = parseInt(operationBaseNumberString);
   var b = parseInt(operationOperatingNumberString);
   
-  if (operationType === 'add') {
-    if (Number.isInteger(operationResult)) {
-      calculatorDisplayText.innerText = add(operationResult, b);
-      operationResult = add(operationResult, b);
-    } else {
-      calculatorDisplayText.innerText = add(a, b);
-      operationResult = add(a, b);
-    }
+  if (Number.isInteger(operationResult)) {
+    calculatorDisplayText.innerText = operationType(operationResult, b);
+    operationResult = operationType(operationResult, b);
+  } else {
+    calculatorDisplayText.innerText = operationType(a, b);
+    operationResult = operationType(a, b);
+  }
+}
+
+function clickEqualsButton() {
+  if (operationType === add) {
+    updateOperationResultAndDisplayText(operationType);
   }
 
-  if (operationType === 'subtract') {
-    if (Number.isInteger(operationResult)) {
-      calculatorDisplayText.innerText = subtract(operationResult, b);
-      operationResult = subtract(operationResult, b);
-    } else {
-      calculatorDisplayText.innerText = subtract(a, b);
-      operationResult = subtract(a, b);
-    }
+  if (operationType === subtract) {
+    updateOperationResultAndDisplayText(operationType);
   }
-
+  
   calculatorState = 'takingBaseNumber';
-
 }
 
 function setupEventListeners() {
@@ -88,11 +109,11 @@ function setupEventListeners() {
     }
 
     if (e.target.parentElement.id === 'add-button') {
-      clickOperationButton('add');
+      clickOperationButton(add);
     }
 
     if (e.target.parentElement.id === 'subtract-button') {
-      clickOperationButton('subtract');
+      clickOperationButton(subtract);
     }
 
     if (e.target.parentElement.id === 'equals-button') {
