@@ -14,23 +14,23 @@ function divide(a, b) {
   return a / b; 
 }
 
-function operate(a, b, operator) {
-  if (operator === '+') {
-    return add(a, b);
-  }
+// function operate(a, b, operator) {
+//   if (operator === '+') {
+//     return add(a, b);
+//   }
 
-  if (operator === '-') {
-    return subtract(a, b);
-  }
+//   if (operator === '-') {
+//     return subtract(a, b);
+//   }
 
-  if (operator === '*') {
-    return multiply(a, b);
-  }
+//   if (operator === '*') {
+//     return multiply(a, b);
+//   }
 
-  if (operator === '/') {
-    return divide(a, b);
-  }
-}
+//   if (operator === '/') {
+//     return divide(a, b);
+//   }
+// }
 
 var operationBaseNumberString = '';
 var operationOperatingNumberString = '';
@@ -63,20 +63,31 @@ function clickOperationButton(operation) {
 }
 
 function clickEqualsButton() {
+  var a = parseInt(operationBaseNumberString);
+  var b = parseInt(operationOperatingNumberString);
+  
   if (operationType === 'add') {
-    var a = parseInt(operationBaseNumberString);
-    var b = parseInt(operationOperatingNumberString);
-    
     if (Number.isInteger(operationResult)) {
-      calculatorDisplayText.innerText = add(b, operationResult);
-      operationResult = add(b, operationResult);
+      calculatorDisplayText.innerText = add(operationResult, b);
+      operationResult = add(operationResult, b);
     } else {
       calculatorDisplayText.innerText = add(a, b);
       operationResult = add(a, b);
     }
-
-    calculatorState = 'takingBaseNumber';
   }
+
+  if (operationType === 'subtract') {
+    if (Number.isInteger(operationResult)) {
+      calculatorDisplayText.innerText = subtract(operationResult, b);
+      operationResult = subtract(operationResult, b);
+    } else {
+      calculatorDisplayText.innerText = subtract(a, b);
+      operationResult = subtract(a, b);
+    }
+  }
+
+  calculatorState = 'takingBaseNumber';
+
 }
 
 function setupEventListeners() {
@@ -96,6 +107,10 @@ function setupEventListeners() {
 
     if (e.target.parentElement.id === 'add-button') {
       clickOperationButton('add');
+    }
+
+    if (e.target.parentElement.id === 'subtract-button') {
+      clickOperationButton('subtract');
     }
 
     if (e.target.parentElement.id === 'equals-button') {
