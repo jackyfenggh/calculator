@@ -80,19 +80,15 @@ function clickEqualsButton() {
   if (operationType === add) {
     updateOperationResultAndDisplayText(operationType);
   }
-
   if (operationType === subtract) {
     updateOperationResultAndDisplayText(operationType);
   }
-
   if (operationType === multiply) {
     updateOperationResultAndDisplayText(operationType);
   }
-
   if (operationType === divide) {
     updateOperationResultAndDisplayText(operationType);
   }
-
   calculatorState = 'takingBaseNumber';
 }
 
@@ -100,68 +96,24 @@ function setupEventListeners() {
   var calculatorButtons = document.getElementById('calculator-buttons');
   calculatorButtons.addEventListener('click', function(e) {
     var buttonNumbersArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    
     buttonNumbersArray.forEach(function(number) {
       if (e.target.parentElement.id === `number-button-${number}`) {
         clickNumberButton(`${number}`);
       }
-    })
-    
-    // if (e.target.parentElement.id === 'number-button-0') {
-    //   clickNumberButton('0');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-1') {
-    //   clickNumberButton('1');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-2') {
-    //   clickNumberButton('2');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-3') {
-    //   clickNumberButton('3');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-4') {
-    //   clickNumberButton('4');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-5') {
-    //   clickNumberButton('5');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-6') {
-    //   clickNumberButton('6');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-7') {
-    //   clickNumberButton('7');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-8') {
-    //   clickNumberButton('8');
-    // }
-
-    // if (e.target.parentElement.id === 'number-button-9') {
-    //   clickNumberButton('9');
-    // }
-
+    });
     if (e.target.parentElement.id === 'add-button') {
       clickOperationButton(add);
     }
-
     if (e.target.parentElement.id === 'subtract-button') {
       clickOperationButton(subtract);
     }
-
     if (e.target.parentElement.id === 'multiply-button') {
       clickOperationButton(multiply);
     }
-
     if (e.target.parentElement.id === 'divide-button') {
       clickOperationButton(divide);
     }
-
     if (e.target.parentElement.id === 'equals-button') {
       clickEqualsButton();
     }
