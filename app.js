@@ -77,6 +77,10 @@ function updateOperationResultAndDisplayText(operationType) {
 }
 
 function clickEqualsButton() {
+  if (operationOperatingNumberString === '') {
+    operationOperatingNumberString = operationBaseNumberString;
+  }
+
   if (operationType === add) {
     updateOperationResultAndDisplayText(operationType);
   }
