@@ -35,6 +35,7 @@ var operatingNumberString = '';
 var operationType = null;
 var operationResult = null;
 var calculatorDisplayText = document.getElementById('calculator-display-text');
+calculatorDisplayText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
 
 function clickNumberButton(number) {

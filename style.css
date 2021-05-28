@@ -6,6 +6,13 @@
   box-sizing: border-box;
 }
 
+#calculator-display-text {
+  text-align: right;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  font-size: 1.5em;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
