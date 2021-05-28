@@ -38,6 +38,10 @@ var calculatorDisplayText = document.getElementById('calculator-display-text');
 calculatorDisplayText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
 
+// Used to overcome the JavaScript decimal precision issue
+var floatMultiplier = 10000000;
+var resultDivisor = floatMultiplier * floatMultiplier;
+
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
     if (baseNumberString === '0') {
@@ -50,6 +54,18 @@ function clickNumberButton(number) {
   
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString += number;
+    calculatorDisplayText.innerText = operatingNumberString;
+  }
+}
+
+function clickDecimalButton() {
+  if (calculatorState === 'takingBaseNumber') {
+    baseNumberString += '.';
+    calculatorDisplayText.innerText = baseNumberString;
+  }
+  
+  if (calculatorState === 'takingOperatingNumber') {
+    operatingNumberString += '.';
     calculatorDisplayText.innerText = operatingNumberString;
   }
 }
@@ -99,18 +115,19 @@ function clickClearButton() {
   operatingNumberString = '';
   operationResult = '';
   calculatorDisplayText.innerText = '0';
+  floatMultiplier = 1;
 }
 
 function updateOperationResultAndDisplayText(operationType) {
-  var a = parseInt(baseNumberString);
-  var b = parseInt(operatingNumberString);
+  var a = parseFloat(baseNumberString) * floatMultiplier;
+  var b = parseFloat(operatingNumberString) * floatMultiplier;
   
   if (Number.isInteger(operationResult)) {
-    calculatorDisplayText.innerText = operationType(operationResult, b);
-    operationResult = operationType(operationResult, b);
+    calculatorDisplayText.innerText = operationType(operationResult, b) / resultDivisor;
+    operationResult = operationType(operationResult, b) / resultDivisor;
   } else {
-    calculatorDisplayText.innerText = operationType(a, b);
-    operationResult = operationType(a, b);
+    calculatorDisplayText.innerText = operationType(a, b) / resultDivisor;
+    operationResult = operationType(a, b) / resultDivisor;
   }
 }
 
@@ -158,6 +175,9 @@ function setupEventListeners() {
     }
     if (e.target.parentElement.id === 'clear-button') {
       clickClearButton();
+    }
+    if (e.target.parentElement.id === 'decimal-button') {
+      clickDecimalButton();
     }
   });
 }
