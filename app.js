@@ -95,18 +95,8 @@ function clickEqualsButton() {
     operatingNumberString = baseNumberString;
   }
 
-  if (operationType === add) {
-    updateOperationResultAndDisplayText(operationType);
-  }
-  if (operationType === subtract) {
-    updateOperationResultAndDisplayText(operationType);
-  }
-  if (operationType === multiply) {
-    updateOperationResultAndDisplayText(operationType);
-  }
-  if (operationType === divide) {
-    updateOperationResultAndDisplayText(operationType);
-  }
+  updateOperationResultAndDisplayText(operationType);
+
   calculatorState = 'takingBaseNumber';
   baseNumberString = '';
 }
