@@ -40,6 +40,9 @@ var calculatorState = 'takingBaseNumber';
 
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
+    if (baseNumberString === '0') {
+      baseNumberString = '';
+    }
     baseNumberString += number;
     calculatorDisplayText.innerText = baseNumberString;
     operationResult = '';
@@ -75,6 +78,19 @@ function clickDeleteButton() {
 
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString = operatingNumberString.replace(operatingNumberString[operatingNumberString.length - 1], '');
+  }
+}
+
+function clickClearEntryButton() {
+  if (calculatorState === 'takingBaseNumber') {
+    baseNumberString = '0';
+    operationResult = '';
+    calculatorDisplayText.innerText = '0';
+  }
+
+  if (calculatorState === 'takingOperatingNumber') {
+    operatingNumberString = '';
+    calculatorDisplayText.innerText = '0';
   }
 }
 
@@ -127,9 +143,11 @@ function setupEventListeners() {
     if (e.target.parentElement.id === 'equals-button') {
       clickEqualsButton();
     }
-
     if (e.target.parentElement.id === 'delete-button') {
       clickDeleteButton();
+    }
+    if (e.target.parentElement.id === 'clear-entry-button') {
+      clickClearEntryButton();
     }
   });
 }
