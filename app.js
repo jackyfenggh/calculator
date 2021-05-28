@@ -30,8 +30,8 @@ function divide(a, b) {
   }
 }
 
-var operationBaseNumberString = '';
-var operationOperatingNumberString = '';
+var baseNumberString = '';
+var operatingNumberString = '';
 var operationType = null;
 var operationResult = null;
 var calculatorDisplayText = document.getElementById('calculator-display-text');
@@ -39,13 +39,14 @@ var calculatorState = 'takingBaseNumber';
 
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
-    operationBaseNumberString += number;
-    calculatorDisplayText.innerText = operationBaseNumberString;
+    baseNumberString += number;
+    calculatorDisplayText.innerText = baseNumberString;
+    operationResult = '';
   }
   
   if (calculatorState === 'takingOperatingNumber') {
-    operationOperatingNumberString += number;
-    calculatorDisplayText.innerText = operationOperatingNumberString;
+    operatingNumberString += number;
+    calculatorDisplayText.innerText = operatingNumberString;
   }
 }
 
@@ -53,19 +54,32 @@ function clickOperationButton(operation) {
   operationType = operation;
 
   if (Number.isInteger(operationResult)) {
-    operationBaseNumberString = operationResult;
-    operationOperatingNumberString = '';
+    baseNumberString = operationResult;
+    operatingNumberString = '';
     calculatorState = 'takingOperatingNumber';
   }
 
   if (!Number.isInteger(operationResult)) {
     calculatorState = 'takingOperatingNumber';
+    operatingNumberString = '';
+  }
+}
+
+function clickDeleteButton() {
+  calculatorDisplayText.innerText = calculatorDisplayText.innerText.replace(calculatorDisplayText.innerText[calculatorDisplayText.innerText.length - 1], '');
+
+  if (calculatorState === 'takingBaseNumber') {
+    baseNumberString = baseNumberString.replace(baseNumberString[baseNumberString.length - 1], '');
+  }
+
+  if (calculatorState === 'takingOperatingNumber') {
+    operatingNumberString = operatingNumberString.replace(operatingNumberString[operatingNumberString.length - 1], '');
   }
 }
 
 function updateOperationResultAndDisplayText(operationType) {
-  var a = parseInt(operationBaseNumberString);
-  var b = parseInt(operationOperatingNumberString);
+  var a = parseInt(baseNumberString);
+  var b = parseInt(operatingNumberString);
   
   if (Number.isInteger(operationResult)) {
     calculatorDisplayText.innerText = operationType(operationResult, b);
@@ -77,8 +91,8 @@ function updateOperationResultAndDisplayText(operationType) {
 }
 
 function clickEqualsButton() {
-  if (operationOperatingNumberString === '') {
-    operationOperatingNumberString = operationBaseNumberString;
+  if (operatingNumberString === '') {
+    operatingNumberString = baseNumberString;
   }
 
   if (operationType === add) {
@@ -94,6 +108,7 @@ function clickEqualsButton() {
     updateOperationResultAndDisplayText(operationType);
   }
   calculatorState = 'takingBaseNumber';
+  baseNumberString = '';
 }
 
 function setupEventListeners() {
@@ -120,6 +135,10 @@ function setupEventListeners() {
     }
     if (e.target.parentElement.id === 'equals-button') {
       clickEqualsButton();
+    }
+
+    if (e.target.parentElement.id === 'delete-button') {
+      clickDeleteButton();
     }
   });
 }
