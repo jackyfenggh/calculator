@@ -94,6 +94,13 @@ function clickClearEntryButton() {
   }
 }
 
+function clickClearButton() {
+  baseNumberString = '';
+  operatingNumberString = '';
+  operationResult = '';
+  calculatorDisplayText.innerText = '0';
+}
+
 function updateOperationResultAndDisplayText(operationType) {
   var a = parseInt(baseNumberString);
   var b = parseInt(operatingNumberString);
@@ -148,6 +155,9 @@ function setupEventListeners() {
     }
     if (e.target.parentElement.id === 'clear-entry-button') {
       clickClearEntryButton();
+    }
+    if (e.target.parentElement.id === 'clear-button') {
+      clickClearButton();
     }
   });
 }
