@@ -54,6 +54,18 @@ function clickNumberButton(number) {
   }
 }
 
+function clickDecimalButton() {
+  if (calculatorState === 'takingBaseNumber') {
+    baseNumberString += '.';
+    calculatorDisplayText.innerText = baseNumberString;
+  }
+
+  if (calculatorState === 'takingOperatingNumber') {
+    operatingNumberString += '.';
+    calculatorDisplayText.innerText = operatingNumberString;
+  }
+}
+
 function clickOperationButton(operation) {
   operationType = operation;
 
@@ -102,8 +114,8 @@ function clickClearButton() {
 }
 
 function updateOperationResultAndDisplayText(operationType) {
-  var a = parseInt(baseNumberString);
-  var b = parseInt(operatingNumberString);
+  var a = parseFloat(baseNumberString);
+  var b = parseFloat(operatingNumberString);
   
   if (Number.isInteger(operationResult)) {
     calculatorDisplayText.innerText = operationType(operationResult, b);
@@ -158,6 +170,9 @@ function setupEventListeners() {
     }
     if (e.target.parentElement.id === 'clear-button') {
       clickClearButton();
+    }
+    if (e.target.parentElement.id === 'decimal-button') {
+      clickDecimalButton();
     }
   });
 }
