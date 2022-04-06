@@ -20,11 +20,29 @@ function multiply(a, b) {
   if (b === '') {
     result = a * a;
   } else {
-    result = a * b;  
+    result = a * b;
   }
 
   operationResultDecimalPlaces = baseNumberDecimalPlaces + operatingNumberDecimalPlaces;
-  return toFixed(result, operationResultDecimalPlaces)
+  result = toFixed(result, operationResultDecimalPlaces);
+
+  if (operationResultDecimalPlaces > 0 
+      && result.charAt(result.length - 1) === '0') {
+        result = removeTrailingDecimalZeroes(result);
+  }
+
+  return result;
+}
+
+function removeTrailingDecimalZeroes(val) {
+  while (val.charAt(val.length - 1) === '0') {
+    val = val.slice(0, val.length - 1);
+  }
+  if (val.charAt(val.length - 1) === '.') {
+    val = val.slice(0, val.length - 1)
+  }
+  takingDecimal = false;
+  return val;
 }
 
 function toFixed(val, decimalPlaces) {
@@ -171,7 +189,7 @@ function updateOperationResultAndDisplayText(operationType) {
   if (operationResultDecimalPlaces > 0) {
     operationResult = parseFloat(operationResult);
   } else {
-    operationResult = parseInt 
+    operationResult = parseInt(operationResult);
   }
 
   if (Number(operationResult)) {
@@ -179,7 +197,7 @@ function updateOperationResultAndDisplayText(operationType) {
     operationResult = operationType(operationResult, b);
   } else {
     calculatorDisplayText.innerText = operationType(a, b);
-    operationResult = operationType(a, b);
+    operationResult = calculatorDisplayText.innerText;
   }
 }
 
