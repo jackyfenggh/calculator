@@ -31,12 +31,15 @@ function divide(a, b) {
 }
 
 var baseNumberString = '';
+var baseNumberDecimalPlaces = 0;
 var operatingNumberString = '';
+var operatingNumberDecimalPlaces = 0;
 var operationType = null;
 var operationResult = null;
 var calculatorDisplayText = document.getElementById('calculator-display-text');
 calculatorDisplayText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
+var takingDecimal = false;
 
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
@@ -55,6 +58,12 @@ function clickNumberButton(number) {
 }
 
 function clickDecimalButton() {
+  if (takingDecimal === true) {
+    return;
+  }
+  
+  takingDecimal = true;
+
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString += '.';
     calculatorDisplayText.innerText = baseNumberString;
@@ -67,15 +76,16 @@ function clickDecimalButton() {
 }
 
 function clickOperationButton(operation) {
+  takingDecimal = false;
   operationType = operation;
 
-  if (Number.isInteger(operationResult)) {
-    baseNumberString = operationResult;
+  if (Number(operationResult)) {
+    baseNumiberString = operationResult;
     operatingNumberString = '';
     calculatorState = 'takingOperatingNumber';
   }
 
-  if (!Number.isInteger(operationResult)) {
+  if (!Number(operationResult)) {
     calculatorState = 'takingOperatingNumber';
     operatingNumberString = '';
   }
@@ -117,7 +127,7 @@ function updateOperationResultAndDisplayText(operationType) {
   var a = parseFloat(baseNumberString);
   var b = parseFloat(operatingNumberString);
   
-  if (Number.isInteger(operationResult)) {
+  if (Number(operationResult)) {
     calculatorDisplayText.innerText = operationType(operationResult, b);
     operationResult = operationType(operationResult, b);
   } else {
