@@ -61,6 +61,7 @@ function clickNumberButton(number) {
     }
     baseNumberString += number;
     calculatorDisplayText.innerText = baseNumberString;
+    operationResultDecimalPlaces = 0;
     operationResult = '';
   }
   
@@ -170,7 +171,7 @@ function updateOperationResultAndDisplayText(operationType) {
   if (operationResultDecimalPlaces > 0) {
     operationResult = parseFloat(operationResult);
   } else {
-    operationResult = parseInt(operationResult); 
+    operationResult = parseInt 
   }
 
   if (Number(operationResult)) {
