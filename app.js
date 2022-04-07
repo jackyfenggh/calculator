@@ -1,3 +1,5 @@
+/* Operation functions */
+
 function add(a, b) {
   if (b === '') {
     return a + a;
@@ -14,7 +16,7 @@ function subtract(a, b) {
   }
 }
 
-function multiply(a, b) {
+function multiply(a, b, decimalPlacesA, decimalPlacesB) {
   var result;
 
   if (b === '') {
@@ -23,7 +25,7 @@ function multiply(a, b) {
     result = a * b;
   }
 
-  operationResultDecimalPlaces = baseNumberDecimalPlaces + operatingNumberDecimalPlaces;
+  operationResultDecimalPlaces = decimalPlacesA + decimalPlacesB;
   result = toFixed(result, operationResultDecimalPlaces);
 
   if (operationResultDecimalPlaces > 0 
@@ -33,6 +35,45 @@ function multiply(a, b) {
 
   return result;
 }
+
+function divide(a, b, decimalPlacesA, decimalPlacesB) {
+  var result;
+  if (decimalPlacesA !== 0 || decimalPlacesB !== 0) {
+    var multiplier = decimalPlacesA > decimalPlacesB ? decimalPlacesA : decimalPlacesB;
+  }
+
+  if (b === '') {
+    result = (a + 'e' + multiplier) / (a + 'e' + multiplier);
+  } else {
+    result = (a + 'e' + multiplier) / (b + 'e' + multiplier);
+  }
+
+  result = Number(result).toString();
+
+  // if (b === '') {
+  //   result = a / a;
+  // } else {
+  //   result = a / b;  
+  // }
+
+  // operationResultDecimalPlaces = countDecimalPlaces(result);
+  // result = toFixed(result, operationResultDecimalPlaces);
+
+  // if (operationResultDecimalPlaces > 0 
+  //     && result.charAt(result.length - 1) === '0') {
+  //       result = removeTrailingDecimalZeroes(result);
+  // }
+
+
+  if (operationResultDecimalPlaces > 0 
+      && result.charAt(result.length - 1) === '0') {
+        result = removeTrailingDecimalZeroes(result);
+  }
+
+  return result;
+}
+
+/* Helper functions */
 
 function removeTrailingDecimalZeroes(val) {
   while (val.charAt(val.length - 1) === '0') {
@@ -52,11 +93,13 @@ function toFixed(val, decimalPlaces) {
   return result;
 }
 
-function divide(a, b) {
-  if (b === '') {
-    return a / a;
+function countDecimalPlaces(val) {
+  val = Number(val).toString().split('.');
+  if (val.length > 1) {
+    var decimalPlaces = val[1].length;
+    return decimalPlaces; 
   } else {
-    return a / b;  
+    return 0;
   }
 }
 
@@ -65,7 +108,7 @@ var baseNumberDecimalPlaces = 0;
 var operatingNumberString = '';
 var operatingNumberDecimalPlaces = 0;
 var operationType = null;
-var operationResult = null;
+var operationResultString = '';
 var operationResultDecimalPlaces = 0;
 var calculatorDisplayText = document.getElementById('calculator-display-text');
 calculatorDisplayText.innerText = '0';
@@ -80,7 +123,7 @@ function clickNumberButton(number) {
     baseNumberString += number;
     calculatorDisplayText.innerText = baseNumberString;
     operationResultDecimalPlaces = 0;
-    operationResult = '';
+    operationResultString = '';
   }
   
   if (calculatorState === 'takingOperatingNumber') {
@@ -107,27 +150,27 @@ function clickDecimalButton() {
   }
 }
 
-function updateDecimalPlaces() {
-  if (calculatorState === 'takingBaseNumber') {
-    baseNumberDecimalPlaces++;
-  }
+// function updateDecimalPlaces() {
+//   if (calculatorState === 'takingBaseNumber') {
+//     baseNumberDecimalPlaces++;
+//   }
 
-  if (calculatorState === 'takingOperatingNumber') {
-    operatingNumberDecimalPlaces++;
-  }
-}
+//   if (calculatorState === 'takingOperatingNumber') {
+//     operatingNumberDecimalPlaces++;
+//   }
+// }
 
 function clickOperationButton(operation) {
   takingDecimal = false;
   operationType = operation;
 
-  if (Number(operationResult)) {
-    baseNumberString = operationResult;
+  if (Number(operationResultString)) {
+    baseNumberString = operationResultString;
     operatingNumberString = '';
     calculatorState = 'takingOperatingNumber';
   }
 
-  if (!Number(operationResult)) {
+  if (!Number(operationResultString)) {
     calculatorState = 'takingOperatingNumber';
     operatingNumberString = '';
   }
@@ -148,7 +191,7 @@ function clickDeleteButton() {
 function clickClearEntryButton() {
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString = '0';
-    operationResult = '';
+    operationResultString = '';
     calculatorDisplayText.innerText = '0';
     takingDecimal = false;
   }
@@ -165,39 +208,45 @@ function clickClearButton() {
   baseNumberDecimalPlaces = 0;
   operatingNumberString = '';
   operatingNumberDecimalPlaces = 0;
-  operationResult = '';
+  operationResultString = '';
   calculatorDisplayText.innerText = '0';
   calculatorState = 'takingBaseNumber';
   takingDecimal = false;
 }
 
 function updateOperationResultAndDisplayText(operationType) {
-  var a, b;
+  var baseNumber, operationNumber, operationResult;
+  baseNumberDecimalPlaces = countDecimalPlaces(baseNumberString);
+  operatingNumberDecimalPlaces = countDecimalPlaces(operatingNumberString);
+  operationResultDecimalPlaces = countDecimalPlaces(operationResultString);
 
+  // if (baseNumberDecimalPlaces > 0) {
   if (baseNumberDecimalPlaces > 0) {
-    a = parseFloat(baseNumberString);
+    baseNumber = parseFloat(baseNumberString);
   } else {
-    a = parseInt(baseNumberString);
+    baseNumber = parseInt(baseNumberString);
   }
 
+  // if (operatingNumberDecimalPlaces > 0) {
   if (operatingNumberDecimalPlaces > 0) {
-    b = parseFloat(operatingNumberString);
+    operationNumber = parseFloat(operatingNumberString);
   } else {
-    b = parseInt(operatingNumberString);
+    operationNumber = parseInt(operatingNumberString);
   }
 
+  // if (operationResultDecimalPlaces > 0) {
   if (operationResultDecimalPlaces > 0) {
-    operationResult = parseFloat(operationResult);
+    operationResult = parseFloat(operationResultString);
   } else {
-    operationResult = parseInt(operationResult);
+    operationResult = parseInt(operationResultString);
   }
 
-  if (Number(operationResult)) {
-    calculatorDisplayText.innerText = operationType(operationResult, b);
-    operationResult = operationType(operationResult, b);
+  if (Number(operationResultString)) {
+    calculatorDisplayText.innerText = operationType(operationResult, operationNumber, operationResultDecimalPlaces, operatingNumberDecimalPlaces);
+    operationResultString = calculatorDisplayText.innerText;
   } else {
-    calculatorDisplayText.innerText = operationType(a, b);
-    operationResult = calculatorDisplayText.innerText;
+    calculatorDisplayText.innerText = operationType(baseNumber, operationNumber, baseNumberDecimalPlaces, operatingNumberDecimalPlaces);
+    operationResultString = calculatorDisplayText.innerText;
   }
 }
 
@@ -223,7 +272,7 @@ function setupEventListeners() {
       if (e.target.parentElement.id === `number-button-${number}`) {
         clickNumberButton(`${number}`);
         if (takingDecimal) {
-          updateDecimalPlaces();
+          //updateDecimalPlaces();
         }
       }
     });
