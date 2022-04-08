@@ -1,64 +1,66 @@
-#calculator-display {
-  width: 250px;
-  height: 50px;
-  border: 2px solid black;
-  border-bottom: 0;
+* {
   box-sizing: border-box;
-}
-
-#calculator-display-text {
-  text-align: right;
-  margin-top: 1rem;
-  margin-right: 1rem;
-  font-size: 1.5em;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  
-}
-
-.flex-row > div > p {
-  height: 50px;
-  line-height: 3rem;
-  text-align: center;
-  
-  border: 1px solid black;
   margin: 0;
+  padding: 0;
 }
 
-#calculator-buttons {
-  width: 250px;
+.centering {
+  margin: auto;
+  text-align: center;
+}
+
+.sizing {
+  width: 50%;
+}
+
+#calculator {
+  width: 15.625em;
+  height: 19.75em;
+
+}
+
+#calculator-display {
+  border: 0.125em solid black;
+  border-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  padding-right: 0.75em;
+
+}
+
+#calculator-buttons-container {
+  width: 100%;
   box-sizing: border-box;
   border: 1px solid black;
+  height: 75%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
-#clear-entry-button,
-#clear-button,
-#delete-button,
-#divide-button,
-#number-button-1,
-#number-button-2,
-#number-button-3,
-#number-button-4,
-#number-button-5,
-#number-button-6,
-#number-button-7,
-#number-button-8,
-#number-button-9,
-#add-button,
-#subtract-button,
-#multiply-button,
-#divide-button {
-  flex-basis: 100%;
+.calculator-buttons {
+  height: 20%;
+  width: 25%;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#secondary-text {
+  width: 100%;
+  height: 25%;
+  font-size: 1em;
+}
+
+#primary-text {
+  width: 100%;
+  height: 75%;
+  font-size: 1.5em;
+  padding-bottom: 0.5em;
 }
 
 #number-button-0 {
   flex-basis: 50%;
-}
-
-#decimal-button,
-#equals-button {
-  flex-basis: 25%;
 }
