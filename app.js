@@ -251,14 +251,6 @@ function setupEventListeners() {
 
     if (targetId in operationButtons) {
       return clickOperationButton(operationButtons[targetId]);
-    }
-
-    if (targetParentId in operationButtons) {
-      return clickOperationButton(operationButtons[targetParentId]);
-    }
-
-    if (targetNodeName === 'P') {
-      return buttons[targetParentId](targetParentId);
     } else {
       return buttons[targetId](targetId);
     }
