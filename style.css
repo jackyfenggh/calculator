@@ -1,3 +1,8 @@
+:root {
+  --small-font-size: 1em;
+  --big-font-size: 1.5em;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -51,16 +56,17 @@
 #secondary-text {
   width: 100%;
   height: 25%;
-  font-size: 1em;
+  font-size: var(--small-font-size);
 }
 
 #primary-text {
   width: 100%;
   height: 75%;
-  font-size: 1.5em;
+  font-size: var(--big-font-size);
   padding-bottom: 0.5em;
 }
 
-#number-button-0 {
-  flex-basis: 50%;
+#zero-button {
+  width: 50%;
+  height: 20%;
 }

@@ -98,7 +98,6 @@ var operatingNumberDecimalPlaces = 0;
 var operationType = null;
 var operationResultString = '';
 var operationResultDecimalPlaces = 0;
-// var calculatorPrimaryText = document.getElementById('primary-text');
 var calculatorPrimaryText = document.querySelector('#primary-text p');
 calculatorPrimaryText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
@@ -243,39 +242,47 @@ function setupEventListeners() {
   var calculatorButtons = document.getElementById('calculator-buttons-container');
 
   calculatorButtons.addEventListener('click', function(e) {
-    var buttonNumbersArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var targetNodeName = e.target.nodeName;
+    var targetId = e.target.id.split('-')[0];;
+    var targetParentId = e.target.parentElement.id.split('-')[0];;
 
-    buttonNumbersArray.forEach(function(number) {
-      if (e.target.parentElement.id === `number-button-${number}`) {
-        clickNumberButton(`${number}`);
-      }
-    });
-    if (e.target.parentElement.id === 'add-button') {
-      clickOperationButton(add);
+    var buttons = {
+      0: clickNumberButton,
+      1: clickNumberButton,
+      2: clickNumberButton,
+      3: clickNumberButton,
+      4: clickNumberButton,
+      5: clickNumberButton,
+      6: clickNumberButton,
+      7: clickNumberButton,
+      8: clickNumberButton,
+      9: clickNumberButton,
+      equals: clickEqualsButton,
+      delete: clickDeleteButton,
+      clearEntry: clickClearEntryButton,
+      clear: clickClearButton,
+      decimal: clickDecimalButton
+    };
+
+    var operationButtons = {
+      add: add,
+      subtract: subtract,
+      multiply: multiply,
+      divide: divide
+    };
+
+    if (targetId in operationButtons) {
+      return clickOperationButton(operationButtons[targetId]);
     }
-    if (e.target.parentElement.id === 'subtract-button') {
-      clickOperationButton(subtract);
+
+    if (targetParentId in operationButtons) {
+      return clickOperationButton(operationButtons[targetParentId]);
     }
-    if (e.target.parentElement.id === 'multiply-button') {
-      clickOperationButton(multiply);
-    }
-    if (e.target.parentElement.id === 'divide-button') {
-      clickOperationButton(divide);
-    }
-    if (e.target.parentElement.id === 'equals-button') {
-      clickEqualsButton();
-    }
-    if (e.target.parentElement.id === 'delete-button') {
-      clickDeleteButton();
-    }
-    if (e.target.parentElement.id === 'clear-entry-button') {
-      clickClearEntryButton();
-    }
-    if (e.target.parentElement.id === 'clear-button') {
-      clickClearButton();
-    }
-    if (e.target.parentElement.id === 'decimal-button') {
-      clickDecimalButton();
+
+    if (targetNodeName === 'P') {
+      return buttons[targetParentId](targetParentId);
+    } else {
+      return buttons[targetId](targetId);
     }
   });
 }
