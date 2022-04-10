@@ -16,7 +16,7 @@ function subtract(a, b) {
   }
 }
 
-function multiply(a, b, decimalPlacesA, decimalPlacesB) {
+function multiply(a, b) {
   var result;
 
   if (b === '') {
@@ -25,13 +25,13 @@ function multiply(a, b, decimalPlacesA, decimalPlacesB) {
     result = a * b;
   }
 
-  operationResultDecimalPlaces = decimalPlacesA + decimalPlacesB;
-  result = toFixed(result, operationResultDecimalPlaces);
+  operationResultDecimalPlaces = countDecimalPlaces(a) + countDecimalPlaces(b);
+  result = roundResult(result, operationResultDecimalPlaces);
 
   return result;
 }
 
-function divide(a, b, decimalPlacesA, decimalPlacesB) {
+function divide(a, b) {
   var result;
   var multiplier;
   if (decimalPlacesA !== 0 || decimalPlacesB !== 0) {
@@ -52,10 +52,10 @@ function divide(a, b, decimalPlacesA, decimalPlacesB) {
 
 /* Helper functions */
 
-function toFixed(val, decimalPlaces) {
+function roundResult(val, decimalPlaces) {
   var exponentialForm = Number(val + 'e' + decimalPlaces);
   var rounded = Math.round(exponentialForm);
-  var result = Number(rounded + 'e-' + decimalPlaces).toFixed(decimalPlaces);
+  var result = Number(rounded + 'e-' + decimalPlaces);
   return result;
 }
 
@@ -70,12 +70,9 @@ function countDecimalPlaces(val) {
 }
 
 var baseNumberString = '';
-var baseNumberDecimalPlaces = 0;
 var operatingNumberString = '';
-var operatingNumberDecimalPlaces = 0;
 var operationType = null;
 var operationResultString = '';
-var operationResultDecimalPlaces = 0;
 var calculatorPrimaryText = document.querySelector('#primary-text p');
 calculatorPrimaryText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
@@ -161,46 +158,11 @@ function clickClearEntryButton() {
 
 function clickClearButton() {
   baseNumberString = '';
-  baseNumberDecimalPlaces = 0;
   operatingNumberString = '';
-  operatingNumberDecimalPlaces = 0;
   operationResultString = '';
   calculatorPrimaryText.innerText = '0';
   calculatorState = 'takingBaseNumber';
   takingDecimal = false;
-}
-
-function updateOperationResultAndDisplayText(operationType) {
-  var baseNumber, operationNumber, operationResult;
-  baseNumberDecimalPlaces = countDecimalPlaces(baseNumberString);
-  operatingNumberDecimalPlaces = countDecimalPlaces(operatingNumberString);
-  operationResultDecimalPlaces = countDecimalPlaces(operationResultString);
-
-  if (baseNumberDecimalPlaces > 0) {
-    baseNumber = parseFloat(baseNumberString);
-  } else {
-    baseNumber = parseInt(baseNumberString);
-  }
-
-  if (operatingNumberDecimalPlaces > 0) {
-    operationNumber = parseFloat(operatingNumberString);
-  } else {
-    operationNumber = parseInt(operatingNumberString);
-  }
-
-  if (operationResultDecimalPlaces > 0) {
-    operationResult = parseFloat(operationResultString);
-  } else {
-    operationResult = parseInt(operationResultString);
-  }
-
-  if (Number(operationResultString)) {
-    calculatorPrimaryText.innerText = operationType(operationResult, operationNumber, operationResultDecimalPlaces, operatingNumberDecimalPlaces);
-    operationResultString = calculatorPrimaryText.innerText;
-  } else {
-    calculatorPrimaryText.innerText = operationType(baseNumber, operationNumber, baseNumberDecimalPlaces, operatingNumberDecimalPlaces);
-    operationResultString = calculatorPrimaryText.innerText;
-  }
 }
 
 function clickEqualsButton() {
@@ -208,12 +170,34 @@ function clickEqualsButton() {
     operatingNumberString = baseNumberString;
   }
 
-  updateOperationResultAndDisplayText(operationType);
+  operands = convOperandStringsToNumbers();
+  operationResult = operate(operands, operationType);
+  updateOperationResultAndDisplayText(operationResult);
 
   calculatorState = 'takingBaseNumber';
   baseNumberString = '';
-  operatingNumberDecimalPlaces = 0;
   takingDecimal = false;
+}
+
+function operate(operands, operationType) {
+  if (operands["operationResultString"]) {
+    return operationType(operands["operationResultString"], operands["operatingNumberString"]);
+  } else {
+    return operationType(operands["baseNumberString"], operands["operatingNumberString"]);
+  }
+}
+
+function convOperandStringsToNumbers() {
+  return {
+    baseNumberString: Number(baseNumberString),
+    operatingNumberString: Number(operatingNumberString),
+    operationResultString: Number(operationResultString)
+  };
+}
+
+function updateOperationResultAndDisplayText(result) {
+  calculatorPrimaryText.innerText = result;
+  operationResultString = result;
 }
 
 function setupEventListeners() {
