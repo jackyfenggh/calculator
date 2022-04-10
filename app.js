@@ -220,10 +220,7 @@ function setupEventListeners() {
   var calculatorButtons = document.getElementById('calculator-buttons-container');
 
   calculatorButtons.addEventListener('click', function(e) {
-    var targetNodeName = e.target.nodeName;
-    var targetId = e.target.id.split('-')[0];;
-    var targetParentId = e.target.parentElement.id.split('-')[0];;
-
+    var targetId = e.target.id.split('-')[1];;
     var buttons = {
       0: clickNumberButton,
       1: clickNumberButton,
