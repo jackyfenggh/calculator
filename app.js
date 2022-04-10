@@ -28,11 +28,6 @@ function multiply(a, b, decimalPlacesA, decimalPlacesB) {
   operationResultDecimalPlaces = decimalPlacesA + decimalPlacesB;
   result = toFixed(result, operationResultDecimalPlaces);
 
-  if (operationResultDecimalPlaces > 0 
-      && result.charAt(result.length - 1) === '0') {
-        result = removeTrailingDecimalZeroes(result);
-  }
-
   return result;
 }
 
@@ -52,27 +47,10 @@ function divide(a, b, decimalPlacesA, decimalPlacesB) {
   }
 
   result = Number(result).toString();
-
-  if (operationResultDecimalPlaces > 0 
-      && result.charAt(result.length - 1) === '0') {
-        result = removeTrailingDecimalZeroes(result);
-  }
-
   return result;
 }
 
 /* Helper functions */
-
-function removeTrailingDecimalZeroes(val) {
-  while (val.charAt(val.length - 1) === '0') {
-    val = val.slice(0, val.length - 1);
-  }
-  if (val.charAt(val.length - 1) === '.') {
-    val = val.slice(0, val.length - 1)
-  }
-  takingDecimal = false;
-  return val;
-}
 
 function toFixed(val, decimalPlaces) {
   var exponentialForm = Number(val + 'e' + decimalPlaces);
