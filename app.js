@@ -24,8 +24,9 @@ function countDecimalPlaces(val) {
 var baseNumberString = '';
 var operatingNumberString = '';
 var operationType = null;
-var calculatorPrimaryText = document.querySelector('#primary-text p');
+var calculatorPrimaryText = document.getElementById('primary-text');
 calculatorPrimaryText.innerText = '0';
+var calculatorSecondaryText = document.getElementById('secondary-text');
 var calculatorState = 'takingBaseNumber';
 var takingDecimal = false;
 
@@ -89,15 +90,14 @@ function clickDeleteButton() {
 function clickClearEntryButton() {
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString = '0';
-    calculatorPrimaryText.innerText = '0';
-    takingDecimal = false;
   }
 
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString = '';
-    calculatorPrimaryText.innerText = '0';
-    takingDecimal = false;
   }
+
+  calculatorPrimaryText.innerText = '0';
+  takingDecimal = false;
 }
 
 function clickClearButton() {
@@ -120,7 +120,7 @@ function clickEqualsButton() {
 
   calculatorState = 'displayingResult';
   baseNumberString = operationResult;
-  takingDecimal = false;
+  takingDecimal = !!countDecimalPlaces(baseNumberString);
 }
 
 function operate(baseNumber, operatingNumber, operation) {
