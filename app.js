@@ -1,9 +1,9 @@
 /* Helper functions */
 
-function roundResult(val) {
-  var exponentialForm = Number(val + 'e' + 15);
+function roundResult(val, precision) {
+  var exponentialForm = Number(val + 'e' + precision);
   var rounded = Math.round(exponentialForm);
-  var result = Number(rounded + 'e-' + 15);
+  var result = Number(rounded + 'e-' + precision);
   return result;
 }
 
@@ -21,14 +21,48 @@ function countDecimalPlaces(val) {
   }
 }
 
+var calculatorPrimaryText = document.getElementById('primary-text');
+var calculatorSecondaryText = document.getElementById('secondary-text');
 var baseNumberString = '';
 var operatingNumberString = '';
 var operationType = null;
-var calculatorPrimaryText = document.getElementById('primary-text');
-calculatorPrimaryText.innerText = '0';
-var calculatorSecondaryText = document.getElementById('secondary-text');
 var calculatorState = 'takingBaseNumber';
 var takingDecimal = false;
+
+/* Cartoon number functions */
+
+function setupCartoonNumbers() {
+  for (var i = 0; i <= 9; i++) {
+    var randomTopValue = Math.random() * 100;
+    var randomLeftValue = Math.random() * 100;
+
+    while (randomLeftValue > 33 && randomLeftValue < 65
+      || randomLeftValue > 90
+      || randomLeftValue < 10) {
+      randomLeftValue = Math.random() * 100;
+    }
+
+    while (randomTopValue > 90) {
+      randomTopValue = Math.random() * 100;
+    }
+
+    var randomSign = Math.random() > 0.50 ? '+' : '-';
+    var randomRotateValue = Math.random() * (randomSign + 45);
+    var cartoonNumber = document.getElementById(`img-${i}`);
+    cartoonNumber.style.top = randomTopValue + '%';
+    cartoonNumber.style.left = randomLeftValue + '%';
+    cartoonNumber.style.transform = `rotate(${randomRotateValue}deg)`;
+  }
+}
+
+function animateCartoon(number) {
+  var cartoonNumber = document.getElementById(`img-${number}`);
+  var randomDegrees = Math.random() * 720 + 180;
+  var randomDirection = Math.random() > 0.5 ? '+' : '-';
+  cartoonNumber.style.transform = `rotate(${randomDirection}${randomDegrees}deg)`;
+}
+
+/* Calculator functions */
 
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
@@ -44,12 +78,15 @@ function clickNumberButton(number) {
     baseNumberString = '';
     baseNumberString += number;
     calculatorPrimaryText.innerText = baseNumberString;
+    takingDecimal = false;
   }
   
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString += number;
     calculatorPrimaryText.innerText = operatingNumberString;
   }
+
+  animateCartoon(number);
 }
 
 function clickDecimalButton() {
@@ -59,9 +96,13 @@ function clickDecimalButton() {
   
   takingDecimal = true;
 
-  if (calculatorState === 'takingBaseNumber' || calculatorState === 'displayingResult') {
+  if (calculatorState === 'takingBaseNumber') {
     baseNumberString += '.';
     calculatorPrimaryText.innerText = baseNumberString;
+  } else if (calculatorState === 'displayingResult') {
+    baseNumberString = '0.';
+    calculatorPrimaryText.innerText = baseNumberString;
+    calculatorState = 'takingBaseNumber';
   } else {
     operatingNumberString += '.';
     calculatorPrimaryText.innerText = operatingNumberString;
@@ -71,8 +112,8 @@ function clickDecimalButton() {
 function clickOperationButton(operation) {
   takingDecimal = false;
   operationType = operation;
-  calculatorState = 'takingOperatingNumber'
-  operatingNumberString = ''
+  calculatorState = 'takingOperatingNumber';
+  operatingNumberString = '';
 }
 
 function clickDeleteButton() {
@@ -128,10 +169,9 @@ function clickEqualsButton() {
   operationResult = operate(baseNumber, operatingNumber, operationType);
   calculatorPrimaryText.innerText = operationResult;
 
-
   calculatorState = 'displayingResult';
   baseNumberString = operationResult;
-  takingDecimal = !!countDecimalPlaces(baseNumberString);
+  takingDecimal = false;
 }
 
 function operate(baseNumber, operatingNumber, operation) {
@@ -149,6 +189,8 @@ function operate(baseNumber, operatingNumber, operation) {
   var result = operations[operation];
   return result;
 }
+
+/* Event listeners */
 
 function setupEventListeners() {
   var calculatorButtons = document.getElementById('calculator-btns-container');
@@ -189,3 +231,4 @@ function setupEventListeners() {
 }
 
 setupEventListeners();
+setupCartoonNumbers();

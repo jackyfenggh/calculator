@@ -1,50 +1,76 @@
 :root {
   --small-font-size: 1em;
-  --big-font-size: 1.75em;
+  --big-font-size: 2em;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-button {
-  background: transparent;
-}
-
-.centering {
-  margin: auto;
   text-align: center;
 }
 
-.sizing {
-  width: 50%;
+header {
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+main {
+  height: 80vh;
+  overflow: hidden;
+  position: relative;
+
+}
+
+img {
+  position: absolute;
+  max-width: 5em;
+  max-height: 5em;
+  transition: all 1s ease;
 }
 
 #calculator {
   width: 18.625em;
   height: 25em;
   background-color: rgb(208, 199, 199);
+  border: 1px solid black;
+  margin: auto;
 }
 
 #calculator-display {
-  width: 100%;
+  width: 98%;
   height: 20%;
   border: 1px solid black;
-  border-bottom: 0;
   display: flex;
   flex-direction: column;
-  text-align: right;
   padding-right: 0.75em;
+  background-color: rgb(237, 217, 217);
+  margin: 1% 1%;
+}
 
+#secondary-text {
+  width: 100%;
+  height: 25%;
+  font-size: var(--small-font-size);
+  color: rgb(196, 194, 194);
+  font-style: italic;
+  text-align: right;
+}
+
+#primary-text {
+  width: 100%;
+  height: 75%;
+  border: 0;
+  font-size: var(--big-font-size);
+  padding-top: 0.25em;
+  text-align: right;
 }
 
 #calculator-btns-container {
   width: 100%;
-  box-sizing: border-box;
-  border: 1px solid black;
-  height: 80%;
+  height: 78%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -84,22 +110,6 @@ button {
 
 #btn-equals {
   background-color: rgb(225, 118, 118);
-}
-
-#secondary-text {
-  width: 100%;
-  height: 25%;
-  font-size: var(--small-font-size);
-  color: rgb(196, 194, 194);
-  font-style: italic;
-}
-
-#primary-text {
-  width: 100%;
-  height: 75%;
-  border: 0;
-  font-size: var(--big-font-size);
-  padding-top: 0.25em;
 }
 
 #btn-0 {
