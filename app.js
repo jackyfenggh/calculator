@@ -1,18 +1,14 @@
 /* Helper functions */
 
-function roundResult(val) {
-  var exponentialForm = Number(val + 'e' + 15);
+function roundResult(val, precision) {
+  var exponentialForm = Number(val + 'e' + precision);
   var rounded = Math.round(exponentialForm);
-  var result = Number(rounded + 'e-' + 15);
+  var result = Number(rounded + 'e-' + precision);
   return result;
 }
 
 function getExponentialForm(num, exponent) {
   return Number(num + 'e' + exponent);
-}
-
-function getLogForm(num, exponent) {
-  return Number(num + 'e-' + exponent);
 }
 
 function countDecimalPlaces(val) {
