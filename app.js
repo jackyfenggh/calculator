@@ -1,62 +1,18 @@
-/* Operation functions */
-
-function add(a, b) {
-  if (b === '') {
-    return a + a;
-  } else {
-    return a + b;  
-  }
-}
-
-function subtract(a, b) {
-  if (b === '') {
-    return a - a;
-  } else {
-    return a - b;  
-  }
-}
-
-function multiply(a, b) {
-  var result;
-
-  if (b === '') {
-    result = a * a;
-  } else {
-    result = a * b;
-  }
-
-  operationResultDecimalPlaces = countDecimalPlaces(a) + countDecimalPlaces(b);
-  result = roundResult(result, operationResultDecimalPlaces);
-
-  return result;
-}
-
-function divide(a, b) {
-  var result;
-  var multiplier;
-  if (decimalPlacesA !== 0 || decimalPlacesB !== 0) {
-    multiplier = decimalPlacesA > decimalPlacesB ? decimalPlacesA : decimalPlacesB;
-  } else {
-    multiplier = 0;
-  }
-
-  if (b === '') {
-    result = (a + 'e' + multiplier) / (a + 'e' + multiplier);
-  } else {
-    result = (a + 'e' + multiplier) / (b + 'e' + multiplier);
-  }
-
-  result = Number(result).toString();
-  return result;
-}
-
 /* Helper functions */
 
-function roundResult(val, decimalPlaces) {
-  var exponentialForm = Number(val + 'e' + decimalPlaces);
+function roundResult(val) {
+  var exponentialForm = Number(val + 'e' + 15);
   var rounded = Math.round(exponentialForm);
-  var result = Number(rounded + 'e-' + decimalPlaces);
+  var result = Number(rounded + 'e-' + 15);
   return result;
+}
+
+function getExponentialForm(num, exponent) {
+  return Number(num + 'e' + exponent);
+}
+
+function getLogForm(num, exponent) {
+  return Number(num + 'e-' + exponent);
 }
 
 function countDecimalPlaces(val) {
@@ -72,7 +28,6 @@ function countDecimalPlaces(val) {
 var baseNumberString = '';
 var operatingNumberString = '';
 var operationType = null;
-var operationResultString = '';
 var calculatorPrimaryText = document.querySelector('#primary-text p');
 calculatorPrimaryText.innerText = '0';
 var calculatorState = 'takingBaseNumber';
@@ -85,8 +40,13 @@ function clickNumberButton(number) {
     }
     baseNumberString += number;
     calculatorPrimaryText.innerText = baseNumberString;
-    operationResultDecimalPlaces = 0;
-    operationResultString = '';
+  }
+
+  if (calculatorState === 'displayingResult') {
+    calculatorState = 'takingBaseNumber';
+    baseNumberString = '';
+    baseNumberString += number;
+    calculatorPrimaryText.innerText = baseNumberString;
   }
   
   if (calculatorState === 'takingOperatingNumber') {
@@ -102,12 +62,10 @@ function clickDecimalButton() {
   
   takingDecimal = true;
 
-  if (calculatorState === 'takingBaseNumber') {
+  if (calculatorState === 'takingBaseNumber' || calculatorState === 'displayingResult') {
     baseNumberString += '.';
     calculatorPrimaryText.innerText = baseNumberString;
-  }
-
-  if (calculatorState === 'takingOperatingNumber') {
+  } else {
     operatingNumberString += '.';
     calculatorPrimaryText.innerText = operatingNumberString;
   }
@@ -116,17 +74,8 @@ function clickDecimalButton() {
 function clickOperationButton(operation) {
   takingDecimal = false;
   operationType = operation;
-
-  if (Number(operationResultString)) {
-    baseNumberString = operationResultString;
-    operatingNumberString = '';
-    calculatorState = 'takingOperatingNumber';
-  }
-
-  if (!Number(operationResultString)) {
-    calculatorState = 'takingOperatingNumber';
-    operatingNumberString = '';
-  }
+  calculatorState = 'takingOperatingNumber'
+  operatingNumberString = ''
 }
 
 function clickDeleteButton() {
@@ -144,7 +93,6 @@ function clickDeleteButton() {
 function clickClearEntryButton() {
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString = '0';
-    operationResultString = '';
     calculatorPrimaryText.innerText = '0';
     takingDecimal = false;
   }
@@ -159,7 +107,6 @@ function clickClearEntryButton() {
 function clickClearButton() {
   baseNumberString = '';
   operatingNumberString = '';
-  operationResultString = '';
   calculatorPrimaryText.innerText = '0';
   calculatorState = 'takingBaseNumber';
   takingDecimal = false;
@@ -170,34 +117,34 @@ function clickEqualsButton() {
     operatingNumberString = baseNumberString;
   }
 
-  operands = convOperandStringsToNumbers();
-  operationResult = operate(operands, operationType);
+  var baseNumber = Number(baseNumberString);
+  var operatingNumber = Number(operatingNumberString);
+  operationResult = operate(baseNumber, operatingNumber, operationType);
   updateOperationResultAndDisplayText(operationResult);
 
-  calculatorState = 'takingBaseNumber';
-  baseNumberString = '';
+  calculatorState = 'displayingResult';
+  baseNumberString = operationResult;
   takingDecimal = false;
 }
 
-function operate(operands, operationType) {
-  if (operands["operationResultString"]) {
-    return operationType(operands["operationResultString"], operands["operatingNumberString"]);
-  } else {
-    return operationType(operands["baseNumberString"], operands["operatingNumberString"]);
-  }
-}
+function operate(baseNumber, operatingNumber, operation) {
+  var baseNumberDecimalPlaces = countDecimalPlaces(baseNumber);
+  var operatingNumberDecimalPlaces = countDecimalPlaces(operatingNumber);
+  var exponent = baseNumberDecimalPlaces + operatingNumberDecimalPlaces;
 
-function convOperandStringsToNumbers() {
-  return {
-    baseNumberString: Number(baseNumberString),
-    operatingNumberString: Number(operatingNumberString),
-    operationResultString: Number(operationResultString)
+  var operations = {
+    '+': roundResult(baseNumber + operatingNumber, exponent),
+    '-': roundResult(baseNumber - operatingNumber, exponent),
+    '*': roundResult(baseNumber * operatingNumber, exponent),
+    '/': getExponentialForm(baseNumber, exponent) / getExponentialForm(operatingNumber, exponent)
   };
+    
+  var result = operations[operation];
+  return result;
 }
 
 function updateOperationResultAndDisplayText(result) {
   calculatorPrimaryText.innerText = result;
-  operationResultString = result;
 }
 
 function setupEventListeners() {
@@ -224,10 +171,10 @@ function setupEventListeners() {
     };
 
     var operationButtons = {
-      add: add,
-      subtract: subtract,
-      multiply: multiply,
-      divide: divide
+      add: '+',
+      subtract: '-',
+      multiply: '*',
+      divide: '/'
     };
 
     if (targetId in operationButtons) {
