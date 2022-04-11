@@ -1,9 +1,9 @@
 /* Helper functions */
 
-function roundResult(val, precision) {
-  var exponentialForm = Number(val + 'e' + precision);
+function roundResult(val) {
+  var exponentialForm = Number(val + 'e' + 15);
   var rounded = Math.round(exponentialForm);
-  var result = Number(rounded + 'e-' + precision);
+  var result = Number(rounded + 'e-' + 15);
   return result;
 }
 
@@ -109,6 +109,16 @@ function clickClearButton() {
 }
 
 function clickEqualsButton() {
+  if (!operationType) {
+    return;
+  }
+
+  if (operationType === '/' && operatingNumberString === '0') {
+    clickClearButton();
+    calculatorPrimaryText.innerText = 'Cannot divide by 0';
+    return
+  }
+
   if (operatingNumberString === '') {
     operatingNumberString = baseNumberString;
   }
@@ -116,7 +126,8 @@ function clickEqualsButton() {
   var baseNumber = Number(baseNumberString);
   var operatingNumber = Number(operatingNumberString);
   operationResult = operate(baseNumber, operatingNumber, operationType);
-  updateOperationResultAndDisplayText(operationResult);
+  calculatorPrimaryText.innerText = operationResult;
+
 
   calculatorState = 'displayingResult';
   baseNumberString = operationResult;
@@ -139,12 +150,8 @@ function operate(baseNumber, operatingNumber, operation) {
   return result;
 }
 
-function updateOperationResultAndDisplayText(result) {
-  calculatorPrimaryText.innerText = result;
-}
-
 function setupEventListeners() {
-  var calculatorButtons = document.getElementById('calculator-buttons-container');
+  var calculatorButtons = document.getElementById('calculator-btns-container');
 
   calculatorButtons.addEventListener('click', function(e) {
     var targetId = e.target.id.split('-')[1];;
