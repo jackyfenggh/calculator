@@ -31,30 +31,6 @@ var takingDecimal = false;
 
 /* Cartoon number functions */
 
-function setupCartoonNumbers() {
-  for (var i = 0; i <= 9; i++) {
-    var randomTopValue = Math.random() * 100;
-    var randomLeftValue = Math.random() * 100;
-
-    while (randomLeftValue > 33 && randomLeftValue < 65
-      || randomLeftValue > 90
-      || randomLeftValue < 10) {
-      randomLeftValue = Math.random() * 100;
-    }
-
-    while (randomTopValue > 90) {
-      randomTopValue = Math.random() * 100;
-    }
-
-    var randomSign = Math.random() > 0.50 ? '+' : '-';
-    var randomRotateValue = Math.random() * (randomSign + 45);
-    var cartoonNumber = document.getElementById(`img-${i}`);
-    cartoonNumber.style.top = randomTopValue + '%';
-    cartoonNumber.style.left = randomLeftValue + '%';
-    cartoonNumber.style.transform = `rotate(${randomRotateValue}deg)`;
-  }
-}
-
 function animateCartoon(number) {
   var cartoonNumber = document.getElementById(`img-${number}`);
   var randomDegrees = Math.random() * 720 + 180;
@@ -195,40 +171,115 @@ function operate(baseNumber, operatingNumber, operation) {
 function setupEventListeners() {
   var calculatorButtons = document.getElementById('calculator-btns-container');
 
+  var operationButtons = {
+    add: '+',
+    subtract: '-',
+    multiply: '*',
+    divide: '/'
+  };
+
+  var otherButtons = {
+    0: clickNumberButton,
+    1: clickNumberButton,
+    2: clickNumberButton,
+    3: clickNumberButton,
+    4: clickNumberButton,
+    5: clickNumberButton,
+    6: clickNumberButton,
+    7: clickNumberButton,
+    8: clickNumberButton,
+    9: clickNumberButton,
+    equals: clickEqualsButton,
+    delete: clickDeleteButton,
+    clearEntry: clickClearEntryButton,
+    clear: clickClearButton,
+    decimal: clickDecimalButton
+  };
+
   calculatorButtons.addEventListener('click', function(e) {
     var targetId = e.target.id.split('-')[1];;
-    var buttons = {
-      0: clickNumberButton,
-      1: clickNumberButton,
-      2: clickNumberButton,
-      3: clickNumberButton,
-      4: clickNumberButton,
-      5: clickNumberButton,
-      6: clickNumberButton,
-      7: clickNumberButton,
-      8: clickNumberButton,
-      9: clickNumberButton,
-      equals: clickEqualsButton,
-      delete: clickDeleteButton,
-      clearEntry: clickClearEntryButton,
-      clear: clickClearButton,
-      decimal: clickDecimalButton
-    };
-
-    var operationButtons = {
-      add: '+',
-      subtract: '-',
-      multiply: '*',
-      divide: '/'
-    };
 
     if (targetId in operationButtons) {
-      return clickOperationButton(operationButtons[targetId]);
+      clickOperationButton(operationButtons[targetId]);
     } else {
-      return buttons[targetId](targetId);
+      otherButtons[targetId](targetId);
     }
+
+    document.activeElement.blur();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    var keystroke = e.which;
+
+    const KEYSTROKES = {
+      normalKeystrokes: {
+        48: 0,
+        96: 0,
+        49: 1,
+        97: 1,
+        50: 2,
+        98: 2,
+        51: 3,
+        99: 3,
+        52: 4,
+        100: 4,
+        53: 5,
+        101: 5,
+        54: 6,
+        102: 6,
+        55: 7,
+        103: 7,
+        56: 8,
+        104: 8,
+        57: 9,
+        105: 9,
+        13: 'equals',
+        187: 'equals',
+        8: 'delete',
+        190: 'decimal'
+      },
+      operationKeystrokes: {
+        107: '+',
+        109: '-',
+        189: '-',
+        106: '*',
+        111: '/',
+        191: '/'
+      },
+      shiftKeystrokes: {
+        187: '+',
+        56: '*'
+      }
+    };
+
+    var shiftKey = e.shiftKey;
+    var { normalKeystrokes, operationKeystrokes, shiftKeystrokes } = KEYSTROKES;
+    var key;
+
+    if (shiftKey === true && keystroke in shiftKeystrokes) {
+      key = shiftKeystrokes[keystroke];
+      return clickOperationButton(key);
+    } 
+    
+    if (keystroke in normalKeystrokes) {
+      key = normalKeystrokes[keystroke];
+      return otherButtons[key](key);
+    }
+  
+    if (keystroke in operationKeystrokes) {
+      key = operationKeystrokes[keystroke];
+      return clickOperationButton(key);
+    }
+
+    // var key = KEYSTROKES["otherKeystrokes"][keystroke];
+
+
+    // if (shiftKey === true && ) {
+    //   otherButtons[key](key);
+    // }
+
+    document.activeElement.blur();
   });
 }
 
 setupEventListeners();
-setupCartoonNumbers();
