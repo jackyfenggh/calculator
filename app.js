@@ -1,3 +1,11 @@
+var calculatorPrimaryText = document.getElementById('primary-text');
+var calculatorSecondaryText = document.getElementById('secondary-text');
+var baseNumberString = '';
+var operatingNumberString = '';
+var operationType = null;
+var calculatorState = 'takingBaseNumber';
+var takingDecimal = false;
+
 /* Helper functions */
 
 function roundResult(val, precision) {
@@ -7,8 +15,8 @@ function roundResult(val, precision) {
   return result;
 }
 
-function getExponentialForm(num, exponent) {
-  return Number(num + 'e' + exponent);
+function getExponentialForm(val, exponent) {
+  return Number(val + 'e' + exponent);
 }
 
 function countDecimalPlaces(val) {
@@ -21,13 +29,28 @@ function countDecimalPlaces(val) {
   }
 }
 
-var calculatorPrimaryText = document.getElementById('primary-text');
-var calculatorSecondaryText = document.getElementById('secondary-text');
-var baseNumberString = '';
-var operatingNumberString = '';
-var operationType = null;
-var calculatorState = 'takingBaseNumber';
-var takingDecimal = false;
+function valIsTooLong(val) {
+  if (Number(val)) {
+    val = val.toString();
+  }
+
+  if (val.length > 17) {
+    return true;
+  }
+}
+
+function removeExcessChars(val) {
+  if (val.length > 17) {
+    val = val.slice(0, 17);
+    if (val.charAt(val.length - 1) === '.') {
+      val = val.slice(0, val.length - 1);
+    }
+
+    return val;
+  }
+
+  return val;
+}
 
 /* Cartoon number functions */
 
@@ -54,12 +77,14 @@ function clickNumberButton(number) {
     baseNumberString = '';
     baseNumberString += number;
     calculatorPrimaryText.innerText = baseNumberString;
+    calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString;
     takingDecimal = false;
   }
   
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString += number;
     calculatorPrimaryText.innerText = operatingNumberString;
+    // calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString;
   }
 
   animateCartoon(number);
@@ -90,21 +115,32 @@ function clickOperationButton(operation) {
   operationType = operation;
   calculatorState = 'takingOperatingNumber';
   operatingNumberString = '';
+
+  calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType;
 }
 
 function clickDeleteButton() {
-  calculatorPrimaryText.innerText = calculatorPrimaryText.innerText.replace(calculatorPrimaryText.innerText[calculatorPrimaryText.innerText.length - 1], '');
-
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString = baseNumberString.replace(baseNumberString[baseNumberString.length - 1], '');
+    calculatorPrimaryText.innerText = baseNumberString;
   }
 
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString = operatingNumberString.replace(operatingNumberString[operatingNumberString.length - 1], '');
+    calculatorPrimaryText.innerText = operatingNumberString;
+  }
+
+  if (calculatorState === 'displayingResult') {
+    clickClearButton();
   }
 }
 
 function clickClearEntryButton() {
+  if (calculatorState === 'displayingResult') {
+    calculatorState = 'takingBaseNumber';
+    calculatorSecondaryText.innerText = '';
+  }
+
   if (calculatorState === 'takingBaseNumber') {
     baseNumberString = '0';
   }
@@ -133,7 +169,7 @@ function clickEqualsButton() {
   if (operationType === '/' && operatingNumberString === '0') {
     clickClearButton();
     calculatorPrimaryText.innerText = 'Cannot divide by 0';
-    return
+    return;
   }
 
   if (operatingNumberString === '') {
@@ -143,7 +179,14 @@ function clickEqualsButton() {
   var baseNumber = Number(baseNumberString);
   var operatingNumber = Number(operatingNumberString);
   operationResult = operate(baseNumber, operatingNumber, operationType);
+
+  if (valIsTooLong(operationResult)) {
+    alert('This calculator isn\'t advanced enough to calculate and display numbers bigger than 17 digits');
+    return;
+  }
+
   calculatorPrimaryText.innerText = operationResult;
+  calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString + ' =';
 
   calculatorState = 'displayingResult';
   baseNumberString = operationResult;
@@ -161,7 +204,7 @@ function operate(baseNumber, operatingNumber, operation) {
     '*': roundResult(baseNumber * operatingNumber, exponent),
     '/': getExponentialForm(baseNumber, exponent) / getExponentialForm(operatingNumber, exponent)
   };
-    
+
   var result = operations[operation];
   return result;
 }
@@ -270,13 +313,6 @@ function setupEventListeners() {
       key = operationKeystrokes[keystroke];
       return clickOperationButton(key);
     }
-
-    // var key = KEYSTROKES["otherKeystrokes"][keystroke];
-
-
-    // if (shiftKey === true && ) {
-    //   otherButtons[key](key);
-    // }
 
     document.activeElement.blur();
   });
