@@ -34,7 +34,7 @@ function valIsTooLong(val) {
     val = val.toString();
   }
 
-  if (val.length > 17) {
+  if (val.length >= 17) {
     return true;
   }
 }
@@ -65,6 +65,10 @@ function animateCartoon(number) {
 
 function clickNumberButton(number) {
   if (calculatorState === 'takingBaseNumber') {
+    if (valIsTooLong(baseNumberString)) {
+      return;
+    }
+
     if (baseNumberString === '0') {
       baseNumberString = '';
     }
@@ -82,9 +86,11 @@ function clickNumberButton(number) {
   }
   
   if (calculatorState === 'takingOperatingNumber') {
+    if (valIsTooLong(operatingNumberString)) {
+      return;
+    }
     operatingNumberString += number;
     calculatorPrimaryText.innerText = operatingNumberString;
-    // calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString;
   }
 
   animateCartoon(number);
@@ -180,7 +186,7 @@ function clickEqualsButton() {
   var operatingNumber = Number(operatingNumberString);
   operationResult = operate(baseNumber, operatingNumber, operationType);
 
-  if (valIsTooLong(operationResult)) {
+  if (operationResult.length > 17) {
     alert('This calculator isn\'t advanced enough to calculate and display numbers bigger than 17 digits');
     return;
   }
