@@ -1,6 +1,6 @@
 var calculatorPrimaryText = document.getElementById('primary-text');
 var calculatorSecondaryText = document.getElementById('secondary-text');
-var baseNumberString = '';
+var baseNumberString = '0';
 var operatingNumberString = '';
 var operationType = null;
 var calculatorState = 'takingBaseNumber';
@@ -77,14 +77,13 @@ function clickNumberButton(number) {
     baseNumberString = '';
     baseNumberString += number;
     calculatorPrimaryText.innerText = baseNumberString;
-    calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString;
+    calculatorSecondaryText.innerText = '';
     takingDecimal = false;
   }
   
   if (calculatorState === 'takingOperatingNumber') {
     operatingNumberString += number;
     calculatorPrimaryText.innerText = operatingNumberString;
-    // calculatorSecondaryText.innerText = baseNumberString + ' ' + operationType + ' ' + operatingNumberString;
   }
 
   animateCartoon(number);
@@ -146,7 +145,7 @@ function clickClearEntryButton() {
   }
 
   if (calculatorState === 'takingOperatingNumber') {
-    operatingNumberString = '';
+    operatingNumberString = '0';
   }
 
   calculatorPrimaryText.innerText = '0';
@@ -156,7 +155,9 @@ function clickClearEntryButton() {
 function clickClearButton() {
   baseNumberString = '';
   operatingNumberString = '';
+  operationType = null;
   calculatorPrimaryText.innerText = '0';
+  calculatorSecondaryText.innerText = '';
   calculatorState = 'takingBaseNumber';
   takingDecimal = false;
 }
